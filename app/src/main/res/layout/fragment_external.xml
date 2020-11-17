@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="写外部存储空间App-Special"
+        android:textAllCaps="false"
+        android:id="@+id/btnWriteFile"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="读外部存储空间App-Special"
+        android:textAllCaps="false"
+        android:id="@+id/btnReadFile"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="写外部缓存空间App-Special"
+        android:textAllCaps="false"
+        android:id="@+id/btnWriteCacheFile"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="读外部缓存空间App-Special"
+        android:textAllCaps="false"
+        android:id="@+id/btnReadCacheFile"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnMediaFiles"
+        android:text="外部存储媒体文件"/>
+</LinearLayout>
