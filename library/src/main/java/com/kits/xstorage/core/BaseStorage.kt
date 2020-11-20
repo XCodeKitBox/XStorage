@@ -6,6 +6,19 @@ import java.io.File
 
 open class BaseStorage {
 
+    fun buildFilePath(basePath:String?,dir:String?,file:String):String?{
+
+        if (basePath == null){
+            return null
+        }
+        return if (dir == null){
+            basePath + File.separator + file
+        }else{
+            basePath + File.separator + dir + File.separator + file
+        }
+
+    }
+
     fun createFile(basePath:String?,dir:String?,file:String): File?{
         var targetPath:String? = null
         if (basePath == null){
@@ -41,6 +54,7 @@ open class BaseStorage {
             }
         }
         val targetFile = File(targetPath)
+
         if (!targetFile.exists()){
             return null
         }

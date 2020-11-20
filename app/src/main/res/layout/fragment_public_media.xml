@@ -7,6 +7,12 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/btnQueryMedia"
+        android:text="查询多媒体文件"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/btnTest"
         android:text="测试使用弃用接口"/>
     <Button
@@ -14,5 +20,28 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnWriteImage"
         android:text="存储图片（兼容版本）"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnWriteDocument"
+        android:text="写Document"
+        android:textAllCaps="false"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnWritePicture"
+        android:text="存储图片"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnReadDocument"
+        android:textAllCaps="false"
+        android:text="读Documents"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnDeleteFile"
+        android:text="删除文件"/>
 
 </LinearLayout>
