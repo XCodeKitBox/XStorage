@@ -22,8 +22,13 @@ class XFile(val context: Context, val targetUri: Uri) {
         return context.contentResolver?.openInputStream(targetUri)
     }
 
-    fun file():File?{
-        return targetUri.toFile()
+
+
+    /**
+     * 此接口只能在应用内部使用，方便获取绝对路径，文件名称等等
+     */
+    fun file():File{
+        return File(targetUri.path.toString())
     }
 
 

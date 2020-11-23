@@ -6,7 +6,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <!--android:hasFragileUserData="true" API > =29 可以保留应用的数据
-    保留数据部分，包括：应用内部存储的数据，应用外部存储空间的数据（App-specific）。注意公共目录本来就不会删除-->
+    保留数据部分，包括：应用内部存储的数据，应用外部存储空间的数据（App-specific）。注意公共目录本来就不会删除
+
+    android:requestLegacyExternalStorage="true" API = 29(Android 10)使用原存储体系
+    -->
     <application
         android:requestLegacyExternalStorage="true"
         android:name=".exam.DemoApp"

@@ -38,7 +38,7 @@ class InnerFragment : SupportFragment(){
 
     private fun initView(){
         btnRead.setOnClickListener {
-            val file = xStorage.read(FileType.INNER_FILE,"/myTest/test1","test1116.txt")
+            val file = xStorage.read(FileType.INNER_FILE,"////myTest//test1","test1116.txt")
             file?.let {
                 val inStream = FileInputStream(file)
                 val buf = ByteArray(inStream.available())
@@ -48,7 +48,7 @@ class InnerFragment : SupportFragment(){
         }
 
         btnWrite.setOnClickListener {
-            val file = xStorage.write(FileType.INNER_FILE,"/myTest/test1","test1116.txt")
+            val file = xStorage.write(FileType.INNER_FILE,"//myTest//test1","test1116.txt")
             file?.let {
                 var outStream: OutputStream? = null
                 try {

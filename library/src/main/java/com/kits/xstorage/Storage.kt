@@ -25,9 +25,20 @@ class Storage private constructor(){
     }
 
     fun init(application: Application){
-        application.registerActivityLifecycleCallbacks(ActivityLifecycle())
+        //application.registerActivityLifecycleCallbacks(ActivityLifecycle())
         this.context = application.applicationContext
+    }
 
+    /****************************************************************************************************
+     * *********************公共操作**************************************
+     ***************************************************************************************************/
+
+    fun getFileByUri(uri:Uri?):XFile?{
+        return PublicStore().getFileByUri(context,uri)
+    }
+
+    fun deleteFileByUri(uri:Uri?):Int{
+        return PublicStore().deleteFileByUri(context,uri)
     }
 
     /****************************************************************************************************
@@ -146,6 +157,13 @@ class Storage private constructor(){
         return PublicStore().deleteFile(context,type,null,file)
     }
 
+    /**
+     * 删除公共多媒体文件，在Android 10 以上的系统会有提示
+     * @param type 标准图片多媒体文件夹
+     * @param dir 子文件夹
+     * @param file 文件名称
+     * @return 返回删除的条数
+     */
     fun deleteImageFile(type:String,dir:String?=null,file: String):Int{
         return PublicStore().deleteImageFile(context,type,dir,file)
     }
@@ -169,6 +187,8 @@ class Storage private constructor(){
     fun deleteVideoFile(type:String,file: String):Int{
         return PublicStore().deleteVideoFile(context,type,null,file)
     }
+
+
 
     /********************************************************************************************************
      * **********************************通过FileProvider访问目录*********************************************

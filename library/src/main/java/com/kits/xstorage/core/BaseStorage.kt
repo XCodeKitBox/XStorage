@@ -1,5 +1,7 @@
 package com.kits.xstorage.core
 
+import android.content.Context
+import android.net.Uri
 import android.os.Environment
 import com.kits.xstorage.FileMode
 import java.io.File
@@ -69,6 +71,35 @@ open class BaseStorage {
             return true
         }
         return false
+    }
+
+    /**
+     *文件的操作，更倾向于使用Uri进行直接操作，即可以把Uri看出存在存储设备的唯一ID
+     * @param context 上下文
+     * @param contentUri 需要查询的Uri
+     */
+    fun getFileByUri(context: Context, contentUri: Uri?):XFile?{
+        contentUri?.let {
+            val queryCursor = context.contentResolver.query(contentUri,null,
+                    null, null,null)
+            if (queryCursor != null && queryCursor.count > 0){
+                queryCursor.close()
+                return XFile(context,contentUri)
+            }
+        }
+        return null
+    }
+
+    /**
+     * 删除文件操作，更倾向于使用Uri进行直接操作，即可以把Uri看出存在存储设备的唯一ID
+     * @param context 上下文
+     * @param contentUri 需要删除的Uri
+     */
+    fun deleteFileByUri(context: Context, contentUri: Uri?):Int{
+        contentUri?.let {
+            return context.contentResolver.delete(contentUri,null,null)
+        }
+        return 0
     }
 
 }

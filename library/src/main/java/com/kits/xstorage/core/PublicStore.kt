@@ -12,6 +12,7 @@ import com.kits.xstorage.FileMode
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
+import java.util.regex.Pattern
 
 
 /**
@@ -24,6 +25,8 @@ import java.io.OutputStream
  * Android 提供的接口不是非常友好，可以考虑将媒体相关的数据封装成实体类，通过接口将数据组装成SQL语句，
  * 再通过MediaStore进行查询（即将MediaStore看出是数据看，封装一个类似greenDao的库，对MediaStore进行操作）
  * 可能某些相片墙的APP有这样的需求，文档操作管理器有这样的需求
+ * 4. 使用MediaStore对文件进行操作，需要特别考虑文件分隔符的问题，这点在Linux上文件名之间可以多个分割符不同，
+ * 因此还是推荐使用Uri对文件进行操作。
  */
 
 
@@ -51,22 +54,29 @@ class PublicStore : BaseStorage(){
         }
     }
 
+    /**
+     * 创建文本文件，存储在 /sdcard/Download 或者 /sdcard/Documents 文件夹。默认存储在 /sdcard/Download 文件夹中
+     * @param context 上下文
+     * @param dir 子文件夹 可以为空
+     * @param file 文件名称
+     * @param contentValues 自定义传入的数据
+     *
+     */
 
-
-    fun writeFile(context: Context,imageType:String?,dir:String?=null,file:String,contentValues: ContentValues):XFile?{
+    fun writeFile(context: Context,type:String?,dir:String?=null,file:String,contentValues: ContentValues):XFile?{
         if(!checkExternalEnable(FileMode.WRITE)){
             return null
         }
-        val mediaBaseDir = if(imageType == null || !standFile.contains(imageType)){
+        val mediaBaseDir = if(type == null || !standFile.contains(type)){
             Environment.DIRECTORY_DOWNLOADS
         }else{
-            imageType
+            type
         }
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-            val mediaContentUri = if(imageType == null || !standFile.contains(imageType)){
-                MediaStore.Downloads.EXTERNAL_CONTENT_URI
-            }else{
+            val mediaContentUri = if(type != null && Environment.DIRECTORY_DOCUMENTS == type){
                 MediaStore.Files.getContentUri("external")
+            }else{
+                MediaStore.Downloads.EXTERNAL_CONTENT_URI
             }
             writeMediaTargetQ(context,mediaContentUri,mediaBaseDir,dir,file,contentValues)
         }else{
@@ -148,6 +158,9 @@ class PublicStore : BaseStorage(){
      */
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun writeMediaTargetQ(context: Context,contentUri:Uri,basePath:String,dir:String?,file:String,contentValues: ContentValues):XFile?{
+        if (Environment.isExternalStorageLegacy()){
+            return writeMedia(context,contentUri,basePath,dir,file,contentValues)
+        }
         val relativePath = buildRelativePath(basePath,dir)
 
         contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH,relativePath)
@@ -175,8 +188,8 @@ class PublicStore : BaseStorage(){
          if (queryCursor != null && queryCursor.count > 0){
              // 默认第一个
              queryCursor.moveToFirst()
-             val media= queryCursor.getLong(queryCursor.getColumnIndex(MediaStore.Images.Media._ID))
-             val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,media)
+             val mediaId= queryCursor.getLong(queryCursor.getColumnIndex(MediaStore.MediaColumns._ID))
+             val uri = ContentUris.withAppendedId(contentUri,mediaId)
              queryCursor.close()
              return XFile(context,uri)
         }
@@ -185,15 +198,19 @@ class PublicStore : BaseStorage(){
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun queryMediaByNameTargetQ(context: Context,contentUri:Uri,basePath:String,dir:String?,file:String):XFile?{
+        if (Environment.isExternalStorageLegacy()){
+            return queryMediaByName(context,contentUri,basePath,dir,file)
+        }
+
         val relativePath = buildRelativePath(basePath,dir)
-        val queryCursor = context.contentResolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI,null,
+        val queryCursor = context.contentResolver.query(contentUri,null,
             MediaStore.MediaColumns.RELATIVE_PATH+"=?"+" AND "+
                     MediaStore.MediaColumns.DISPLAY_NAME+"=?",
             arrayOf(relativePath,file),null)
         if (queryCursor != null && queryCursor.count > 0){
             // 默认第一个
             queryCursor.moveToFirst()
-            val mediaId= queryCursor.getLong(queryCursor.getColumnIndex(MediaStore.Images.Media._ID))
+            val mediaId= queryCursor.getLong(queryCursor.getColumnIndex(MediaStore.MediaColumns._ID))
             val uri = ContentUris.withAppendedId(contentUri,mediaId)
             queryCursor.close()
             return XFile(context,uri)
@@ -202,18 +219,20 @@ class PublicStore : BaseStorage(){
     }
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun buildRelativePath(basePath:String,dir:String?):String?{
+        val regex = "(/)\\1+"
         return when(basePath){
             Environment.DIRECTORY_SCREENSHOTS->
                 if (dir.isNullOrEmpty()) {
                     Environment.DIRECTORY_PICTURES+ File.separator+Environment.DIRECTORY_SCREENSHOTS
                 } else {
-                    Environment.DIRECTORY_PICTURES + File.separator + Environment.DIRECTORY_SCREENSHOTS + File.separator + dir + File.separator
+                    Environment.DIRECTORY_PICTURES + File.separator + Environment.DIRECTORY_SCREENSHOTS+
+                        Pattern.compile(regex).matcher(File.separator + dir).replaceAll("$1")+ File.separator
                 }
             else->{
                 if (dir.isNullOrEmpty()) {
                     basePath + File.separator
                 } else {
-                    basePath + File.separator + dir + File.separator
+                    basePath + Pattern.compile(regex).matcher(File.separator + dir).replaceAll("$1") + File.separator
                 }
             }
         }
@@ -305,8 +324,12 @@ class PublicStore : BaseStorage(){
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun deleteMediaByNameTargetQ(context: Context,contentUri:Uri,basePath:String,dir:String?,file:String):Int{
+        if (Environment.isExternalStorageLegacy()){
+            return deleteMediaByName(context,contentUri,basePath,dir,file)
+        }
+
         val relativePath = buildRelativePath(basePath,dir)
-        return context.contentResolver.delete(MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+        return context.contentResolver.delete(contentUri,
             MediaStore.MediaColumns.RELATIVE_PATH+"=?"+" AND "+
                     MediaStore.MediaColumns.DISPLAY_NAME+"=?",
             arrayOf(relativePath,file))

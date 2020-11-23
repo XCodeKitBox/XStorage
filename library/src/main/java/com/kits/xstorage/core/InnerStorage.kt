@@ -15,7 +15,6 @@ import java.io.OutputStream
  *    2.1 应用管理中清除缓存，删除的是cache下的文件夹，清除数据删除的是cache和files下的所有文件。
  *    2.2 应用在存储空间的限制下面，优先会删除cache下的文件
  * 3. fileStreamPath， openFileInput，openFileOutput 都是直接操作files文件夹下面的子文件，不能在files下创建子文件夹
- * 4.
  */
 class InnerStorage : BaseStorage(){
     /**
