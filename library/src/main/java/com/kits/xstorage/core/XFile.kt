@@ -9,6 +9,10 @@ import java.io.OutputStream
 
 
 class XFile(val context: Context, val targetUri: Uri) {
+    var targetFile:File? = null
+    constructor(context: Context,file: File?):this(context,Uri.fromFile(file)){
+        this.targetFile = file
+    }
     /**
      * 获取输出流
      * @param mode May be "w", "wa", "rw", or "rwt".
@@ -27,8 +31,8 @@ class XFile(val context: Context, val targetUri: Uri) {
     /**
      * 此接口只能在应用内部使用，方便获取绝对路径，文件名称等等
      */
-    fun file():File{
-        return File(targetUri.path.toString())
+    fun file():File?{
+        return targetFile
     }
 
 

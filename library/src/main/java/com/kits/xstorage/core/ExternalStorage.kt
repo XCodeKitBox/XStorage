@@ -29,13 +29,13 @@ class ExternalStorage:BaseStorage(){
      *
      * 注意：简化API接口，type 为null ,所有的文件夹相关的路径在dir，统一设置
      */
-    fun file(context: Context, type:String?, dir:String?, file:String,mode: FileMode): File?{
+    fun file(context: Context, type:String?, dir:String?, file:String,mode: FileMode): XFile?{
         if (!checkExternalEnable(mode)){
             return null
         }
         return when(mode){
-            FileMode.READ -> readFile(context.getExternalFilesDir(type)?.absolutePath, dir, file)
-            FileMode.WRITE-> createFile(context.getExternalFilesDir(type)?.absolutePath, dir, file)
+            FileMode.READ -> readFile(context,context.getExternalFilesDir(type)?.absolutePath, dir, file)
+            FileMode.WRITE-> createFile(context,context.getExternalFilesDir(type)?.absolutePath, dir, file)
         }
     }
 
@@ -45,13 +45,13 @@ class ExternalStorage:BaseStorage(){
      * @param dir 文件夹名称
      * @param file 文件名称
      */
-    fun cacheFile(context: Context,dir:String?,file:String,mode: FileMode):File?{
+    fun cacheFile(context: Context,dir:String?,file:String,mode: FileMode):XFile?{
         if (!checkExternalEnable(mode)){
             return null
         }
         return when(mode){
-            FileMode.READ -> readFile(context.externalCacheDir?.absolutePath, dir, file)
-            FileMode.WRITE-> createFile(context.externalCacheDir?.absolutePath, dir, file)
+            FileMode.READ -> readFile(context,context.externalCacheDir?.absolutePath, dir, file)
+            FileMode.WRITE-> createFile(context,context.externalCacheDir?.absolutePath, dir, file)
         }
     }
 
@@ -62,13 +62,13 @@ class ExternalStorage:BaseStorage(){
      * @param file 需要创建的文件
      * 这个接口有版本要求
      */
-    fun obbDirFile(context: Context, dir: String?, file: String,mode: FileMode): File? {
+    fun obbDirFile(context: Context, dir: String?, file: String,mode: FileMode): XFile? {
         if (!checkExternalEnable(mode)){
             return null
         }
         return when(mode){
-            FileMode.READ -> readFile(context.obbDir.absolutePath, dir, file)
-            FileMode.WRITE-> createFile(context.obbDir.absolutePath, dir, file)
+            FileMode.READ -> readFile(context,context.obbDir.absolutePath, dir, file)
+            FileMode.WRITE-> createFile(context,context.obbDir.absolutePath, dir, file)
         }
     }
 

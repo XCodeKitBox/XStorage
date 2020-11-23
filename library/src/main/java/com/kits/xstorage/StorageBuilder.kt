@@ -3,26 +3,27 @@ package com.kits.xstorage
 import android.content.Context
 import com.kits.xstorage.core.ExternalStorage
 import com.kits.xstorage.core.InnerStorage
+import com.kits.xstorage.core.XFile
 import java.io.File
 
 class StorageBuilder(context: Context, fileType: FileType, dir:String?, file:String,fileMode: FileMode){
-    var targetFile : File? = null
+    var targetFile : XFile? = null
 
     constructor(context: Context, fileType: FileType, file:String,fileMode: FileMode):this(context,fileType,null,file,fileMode)
 
 
     init {
-        when(fileType){
+        targetFile = when(fileType){
             FileType.INNER_FILE->
-                targetFile = InnerStorage().files(context,dir,file,fileMode)
+                InnerStorage().files(context,dir,file,fileMode)
             FileType.INNER_CACHE->
-                targetFile = InnerStorage().cacheFile(context,dir,file,fileMode)
+                InnerStorage().cacheFile(context,dir,file,fileMode)
             FileType.EXTERNAL_FILE->
                 // 简化API接口
-                targetFile = ExternalStorage().file(context,null,dir,file,fileMode)
-                //targetFile = ExternalStorage().file(context,fileDirName,dir,file,fileMode)
+                ExternalStorage().file(context,null,dir,file,fileMode)
+            //targetFile = ExternalStorage().file(context,fileDirName,dir,file,fileMode)
             FileType.EXTERNAL_CACHE->
-                targetFile = ExternalStorage().cacheFile(context,dir,file,fileMode)
+                ExternalStorage().cacheFile(context,dir,file,fileMode)
         }
     }
 }

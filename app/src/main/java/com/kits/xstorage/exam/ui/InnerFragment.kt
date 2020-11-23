@@ -40,7 +40,7 @@ class InnerFragment : SupportFragment(){
         btnRead.setOnClickListener {
             val file = xStorage.read(FileType.INNER_FILE,"////myTest//test1","test1116.txt")
             file?.let {
-                val inStream = FileInputStream(file)
+                val inStream = FileInputStream(file.targetFile)
                 val buf = ByteArray(inStream.available())
                 inStream.read(buf)
                 println("buf == ${String(buf)}")
@@ -52,7 +52,7 @@ class InnerFragment : SupportFragment(){
             file?.let {
                 var outStream: OutputStream? = null
                 try {
-                    outStream = FileOutputStream(file)
+                    outStream = FileOutputStream(file.targetFile)
                     outStream.write("多层文件夹简单的测试一下\n".toByteArray())
                 }catch (e:FileNotFoundException){
 
@@ -68,7 +68,7 @@ class InnerFragment : SupportFragment(){
         btnCacheRead.setOnClickListener {
             val file = xStorage.read(FileType.INNER_CACHE,"/myTest/test1","test1116.txt")
             file?.let {
-                val inStream = FileInputStream(file)
+                val inStream = FileInputStream(file.targetFile)
                 val buf = ByteArray(inStream.available())
                 inStream.read(buf)
                 println("buf == ${String(buf)}")
@@ -81,7 +81,7 @@ class InnerFragment : SupportFragment(){
             file?.let {
                 var outStream: FileOutputStream? = null
                 try {
-                    outStream = FileOutputStream(file)
+                    outStream = FileOutputStream(file.targetFile)
                     outStream?.write("多层文件夹cache简单的测试一下\n".toByteArray())
                 }catch (e:FileNotFoundException){
 

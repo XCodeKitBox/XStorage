@@ -16,11 +16,11 @@ class FileProviderStorage : BaseStorage(){
      * 路径1 rooPath, API >= 29 要通过SAF
      */
     fun rootPath(context:Context,dir:String?,file:String):Uri?{
-        val rootPath = Environment.getRootDirectory().absolutePath
-        val fileTarget = createFile(rootPath,dir,file)
-        if (fileTarget != null){
-            return getUriForFile(context,fileTarget)
-        }
+//        val rootPath = Environment.getRootDirectory().absolutePath
+//        val fileTarget = createFile(rootPath,dir,file)
+//        if (fileTarget != null){
+//            return getUriForFile(context,fileTarget)
+//        }
         return null
 
     }

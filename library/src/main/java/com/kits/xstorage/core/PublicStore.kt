@@ -139,7 +139,7 @@ class PublicStore : BaseStorage(){
 
     private fun writeMedia(context: Context,contentUri:Uri,standDir:String,dir:String?,file:String,contentValues: ContentValues):XFile?{
         val basePath = Environment.getExternalStoragePublicDirectory(standDir).absolutePath
-        val targetFile = createFile(basePath,dir,file)
+        val targetFile = createFile(context,basePath,dir,file)?.targetFile
         return if (targetFile != null){
             contentValues.put(MediaStore.Images.Media.DATA,targetFile.absolutePath)
             val insertUri = context.contentResolver?.insert(contentUri,contentValues)
@@ -238,7 +238,7 @@ class PublicStore : BaseStorage(){
         }
     }
 
-    fun readFile(context: Context,type:String?,dir:String?=null,file:String):XFile?{
+    fun getFile(context: Context,type:String?,dir:String?=null,file:String):XFile?{
         if(!checkExternalEnable(FileMode.WRITE)){
             return null
         }
@@ -260,7 +260,7 @@ class PublicStore : BaseStorage(){
         }
     }
 
-    fun readAudioFile(context: Context,type:String?,dir:String?=null,file:String):XFile?{
+    fun getAudioFile(context: Context,type:String?,dir:String?=null,file:String):XFile?{
         if(!checkExternalEnable(FileMode.WRITE)){
             return null
         }
@@ -277,7 +277,7 @@ class PublicStore : BaseStorage(){
         }
     }
 
-    fun readVideoFile(context: Context,type:String?,dir:String?=null,file:String):XFile?{
+    fun getVideoFile(context: Context,type:String?,dir:String?=null,file:String):XFile?{
         if(!checkExternalEnable(FileMode.WRITE)){
             return null
         }
@@ -295,7 +295,7 @@ class PublicStore : BaseStorage(){
         }
     }
 
-    fun readImageFile(context: Context,type:String?,dir:String?=null,file:String):XFile?{
+    fun getImageFile(context: Context,type:String?,dir:String?=null,file:String):XFile?{
         if(!checkExternalEnable(FileMode.WRITE)){
             return null
         }

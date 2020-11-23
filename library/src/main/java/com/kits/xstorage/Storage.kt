@@ -45,22 +45,22 @@ class Storage private constructor(){
      * *********************内部存储空间，外部存储空间-应用专有目录读写**************************************
      ***************************************************************************************************/
 
-    fun write(fileType: FileType,dir:String?,file:String): File?{
+    fun write(fileType: FileType,dir:String?,file:String): XFile?{
         builder = StorageBuilder(context,fileType,dir,file,FileMode.WRITE)
         return builder.targetFile
     }
 
-    fun write(fileType: FileType,file:String): File?{
+    fun write(fileType: FileType,file:String): XFile?{
         builder = StorageBuilder(context,fileType,file,FileMode.WRITE)
         return builder.targetFile
     }
 
-    fun read(fileType: FileType,dir:String?,file:String): File?{
+    fun read(fileType: FileType,dir:String?,file:String): XFile?{
         builder = StorageBuilder(context,fileType,dir,file,FileMode.READ)
         return builder.targetFile
     }
 
-    fun read(fileType: FileType,file:String): File?{
+    fun read(fileType: FileType,file:String): XFile?{
         builder = StorageBuilder(context,fileType,file,FileMode.READ)
         return builder.targetFile
     }
@@ -117,35 +117,35 @@ class Storage private constructor(){
     }
 
     fun getFile(type:String,dir:String?=null,file: String):XFile?{
-        return PublicStore().readFile(context,type,dir,file)
+        return PublicStore().getFile(context,type,dir,file)
     }
 
     fun getFile(type:String,file: String):XFile?{
-        return PublicStore().readFile(context,type,null,file)
+        return PublicStore().getFile(context,type,null,file)
     }
 
     fun getImageFile(type:String,dir:String?=null,file: String):XFile?{
-        return PublicStore().readImageFile(context,type,dir,file)
+        return PublicStore().getImageFile(context,type,dir,file)
     }
 
     fun getImageFile(type:String,file: String):XFile?{
-        return PublicStore().readImageFile(context,type,null,file)
+        return PublicStore().getImageFile(context,type,null,file)
     }
 
     fun getAudioFile(type:String,dir:String?=null,file: String):XFile?{
-        return PublicStore().readAudioFile(context,type,dir,file)
+        return PublicStore().getAudioFile(context,type,dir,file)
     }
 
     fun getAudioFile(type:String,file: String):XFile?{
-        return PublicStore().readAudioFile(context,type,null,file)
+        return PublicStore().getAudioFile(context,type,null,file)
     }
 
     fun getVideoFile(type:String,dir:String?=null,file: String):XFile?{
-        return PublicStore().readAudioFile(context,type,dir,file)
+        return PublicStore().getAudioFile(context,type,dir,file)
     }
 
     fun getVideoFile(type:String,file: String):XFile?{
-        return PublicStore().readAudioFile(context,type,null,file)
+        return PublicStore().getAudioFile(context,type,null,file)
     }
 
 

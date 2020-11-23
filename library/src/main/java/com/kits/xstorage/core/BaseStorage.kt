@@ -21,7 +21,7 @@ open class BaseStorage {
 
     }
 
-    fun createFile(basePath:String?,dir:String?,file:String): File?{
+    fun createFile(context: Context,basePath:String?,dir:String?,file:String): XFile?{
         var targetPath:String? = null
         if (basePath == null){
             return null
@@ -37,10 +37,10 @@ open class BaseStorage {
         if (targetPath == null){
             return null
         }
-        return File(targetPath)
+        return XFile(context,File(targetPath))
     }
 
-    fun readFile(basePath:String?,dir:String?,file:String): File?{
+    fun readFile(context: Context,basePath:String?,dir:String?,file:String): XFile?{
         var targetPath:String? = null
         if (basePath == null){
             return null
@@ -60,7 +60,7 @@ open class BaseStorage {
         if (!targetFile.exists()){
             return null
         }
-        return targetFile
+        return XFile(context,File(targetPath))
     }
 
     fun checkExternalEnable(mode: FileMode):Boolean{

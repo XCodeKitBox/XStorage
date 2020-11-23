@@ -44,7 +44,7 @@ class ExternalFragment : SupportFragment(){
             // 直接在 file 文件夹下 创建文件
             val file1 = xStorage.write(FileType.EXTERNAL_FILE,"myTest100.txt")
             file1?.let {
-                val out = FileOutputStream(file1)
+                val out = FileOutputStream(file1.targetFile)
                 out.write("向file文件下直接创建子文件\n".toByteArray())
                 out.close()
             }
@@ -52,7 +52,7 @@ class ExternalFragment : SupportFragment(){
             // 在file 文件夹下，创建标准文件夹（语义比较强）
             val file2 = xStorage.write(FileType.EXTERNAL_FILE,Environment.DIRECTORY_DCIM,"myTest100.txt")
             file2?.let {
-                val out = FileOutputStream(file2)
+                val out = FileOutputStream(file2.targetFile)
                 out.write("在file 文件夹下，创建标准文件夹（语义比较强）\n".toByteArray())
                 out.close()
             }
@@ -60,7 +60,7 @@ class ExternalFragment : SupportFragment(){
             // 在file 文件夹下，创建任意层级的文件夹
             val file3 = xStorage.write(FileType.EXTERNAL_FILE,"aa/bb","myTest100.txt")
             file3?.let {
-                val out = FileOutputStream(file3)
+                val out = FileOutputStream(file3.targetFile)
                 out.write("在file 文件夹下，创建任意层级的文件夹\n".toByteArray())
                 out.close()
             }
@@ -71,7 +71,7 @@ class ExternalFragment : SupportFragment(){
             // 直接在 file 文件夹下 创建文件
             val file1 = xStorage.read(FileType.EXTERNAL_FILE,"myTest100.txt")
             file1?.let {
-                val inStream = FileInputStream(file1)
+                val inStream = FileInputStream(file1.targetFile)
                 val buf = ByteArray(inStream.available())
                 inStream.read(buf)
                 println("buf == ${String(buf)}")
@@ -80,7 +80,7 @@ class ExternalFragment : SupportFragment(){
             // 在file 文件夹下，创建标准文件夹（语义比较强）
             val file2 = xStorage.read(FileType.EXTERNAL_FILE,Environment.DIRECTORY_DCIM,"myTest100.txt")
             file2?.let {
-                val inStream = FileInputStream(file2)
+                val inStream = FileInputStream(file2.targetFile)
                 val buf = ByteArray(inStream.available())
                 inStream.read(buf)
                 println("buf == ${String(buf)}")
@@ -89,7 +89,7 @@ class ExternalFragment : SupportFragment(){
             // 在file 文件夹下，创建任意层级的文件夹
             val file3 = xStorage.read(FileType.EXTERNAL_FILE,"aa/bb","myTest100.txt")
             file3?.let {
-                val inStream = FileInputStream(file3)
+                val inStream = FileInputStream(file3.targetFile)
                 val buf = ByteArray(inStream.available())
                 inStream.read(buf)
                 println("buf == ${String(buf)}")
@@ -99,7 +99,7 @@ class ExternalFragment : SupportFragment(){
         btnWriteCacheFile.setOnClickListener {
             val file1 = xStorage.write(FileType.EXTERNAL_CACHE,"myTest200.txt")
             file1?.let {
-                val out = FileOutputStream(file1)
+                val out = FileOutputStream(file1.targetFile)
                 out.write("向Caches文件下直接创建子文件\n".toByteArray())
                 out.close()
             }
@@ -108,7 +108,7 @@ class ExternalFragment : SupportFragment(){
         btnReadCacheFile.setOnClickListener {
             val file1 = xStorage.read(FileType.EXTERNAL_CACHE,"myTest200.txt")
             file1?.let {
-                val inStream = FileInputStream(file1)
+                val inStream = FileInputStream(file1.targetFile)
                 val buf = ByteArray(inStream.available())
                 inStream.read(buf)
                 println("buf == ${String(buf)}")

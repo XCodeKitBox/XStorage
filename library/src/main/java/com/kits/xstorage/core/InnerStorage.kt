@@ -24,10 +24,10 @@ class InnerStorage : BaseStorage(){
      * @param file 需要创建/读取的文件
      *
      */
-    fun files(context: Context, dir: String?, file: String,mode:FileMode): File? {
+    fun files(context: Context, dir: String?, file: String,mode:FileMode): XFile? {
         return when(mode){
-            FileMode.READ -> readFile(context.filesDir.absolutePath, dir, file)
-            FileMode.WRITE-> createFile(context.filesDir.absolutePath, dir, file)
+            FileMode.READ -> readFile(context,context.filesDir.absolutePath, dir, file)
+            FileMode.WRITE-> createFile(context,context.filesDir.absolutePath, dir, file)
         }
     }
 
@@ -38,10 +38,10 @@ class InnerStorage : BaseStorage(){
      * @param file 需要创建的文件
      *
      */
-    fun cacheFile(context: Context, dir: String?, file: String,mode:FileMode): File? {
+    fun cacheFile(context: Context, dir: String?, file: String,mode:FileMode): XFile? {
         return when(mode){
-            FileMode.READ -> readFile(context.cacheDir.absolutePath, dir, file)
-            FileMode.WRITE-> createFile(context.cacheDir.absolutePath, dir, file)
+            FileMode.READ -> readFile(context,context.cacheDir.absolutePath, dir, file)
+            FileMode.WRITE-> createFile(context,context.cacheDir.absolutePath, dir, file)
         }
     }
 
@@ -49,8 +49,8 @@ class InnerStorage : BaseStorage(){
      * 此位置最适合存储应用程序在运行时生成的编译或优化代码 非常少用到,Android 官方注释中
      * 建议不应用部使用这个API 接口
      */
-    fun codeCachesFile(context: Context, dir: String?, file: String): File? {
-        return createFile(context.codeCacheDir.absolutePath, dir, file)
+    fun codeCachesFile(context: Context, dir: String?, file: String): XFile? {
+        return createFile(context,context.codeCacheDir.absolutePath, dir, file)
     }
 
     /**
@@ -60,8 +60,8 @@ class InnerStorage : BaseStorage(){
      * @param file 需要创建的文件
      * 这个接口有版本要求
      */
-    fun obbDirFile(context: Context, dir: String?, file: String): File? {
-        return createFile(context.obbDir.absolutePath, dir, file)
+    fun obbDirFile(context: Context, dir: String?, file: String): XFile? {
+        return createFile(context,context.obbDir.absolutePath, dir, file)
     }
     /**
      * 在内部存储空间/data/data/<applicationId>/ 中创建文件
@@ -71,8 +71,8 @@ class InnerStorage : BaseStorage(){
      * 这个接口有版本要求
      */
     @RequiresApi(Build.VERSION_CODES.N)
-    fun dataFile(context: Context, dir: String?, file: String): File? {
-        return createFile(context.dataDir.absolutePath, dir, file)
+    fun dataFile(context: Context, dir: String?, file: String): XFile? {
+        return createFile(context,context.dataDir.absolutePath, dir, file)
     }
 
     /**
