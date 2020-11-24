@@ -38,7 +38,7 @@ class InnerFragment : SupportFragment(){
 
     private fun initView(){
         btnRead.setOnClickListener {
-            val file = xStorage.read(FileType.INNER_FILE,"////myTest//test1","test1116.txt")
+            val file = xStorage.get(FileType.INNER_FILE,"////myTest//test1","test1116.txt")
             file?.let {
                 val inStream = FileInputStream(file.targetFile)
                 val buf = ByteArray(inStream.available())
@@ -66,7 +66,7 @@ class InnerFragment : SupportFragment(){
 
 
         btnCacheRead.setOnClickListener {
-            val file = xStorage.read(FileType.INNER_CACHE,"/myTest/test1","test1116.txt")
+            val file = xStorage.get(FileType.INNER_CACHE,"/myTest/test1","test1116.txt")
             file?.let {
                 val inStream = FileInputStream(file.targetFile)
                 val buf = ByteArray(inStream.available())
@@ -91,6 +91,35 @@ class InnerFragment : SupportFragment(){
                 }
 
             }
+        }
+
+        btnCreateFile.setOnClickListener {
+            val file1 = xStorage.write(FileType.EXTERNAL_FILE,"MySimple.txt")
+            file1?.let {
+                it.outputStream()
+            }?.let {
+                it.write("这是一段文字\n".toByteArray())
+                it.close()
+            }
+
+            val file2 = xStorage.write(FileType.EXTERNAL_FILE,"MySimple.txt")
+            file2?.let {
+                it.outputStream()
+            }?.let {
+                it.write("这是一段文字,新增一段文字\n".toByteArray())
+                it.close()
+            }
+
+            val file3 = xStorage.write(FileType.EXTERNAL_FILE,"MySimple.txt")
+            file3?.let {
+                it.inputStream()
+            }?.let {
+                val buf = ByteArray(it.available())
+                it.read(buf)
+                println("buf == ${String(buf)}")
+                it.close()
+            }
+
         }
     }
 }

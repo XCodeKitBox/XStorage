@@ -34,7 +34,7 @@ class ExternalStorage:BaseStorage(){
             return null
         }
         return when(mode){
-            FileMode.READ -> readFile(context,context.getExternalFilesDir(type)?.absolutePath, dir, file)
+            FileMode.GET -> readFile(context,context.getExternalFilesDir(type)?.absolutePath, dir, file)
             FileMode.WRITE-> createFile(context,context.getExternalFilesDir(type)?.absolutePath, dir, file)
         }
     }
@@ -50,7 +50,7 @@ class ExternalStorage:BaseStorage(){
             return null
         }
         return when(mode){
-            FileMode.READ -> readFile(context,context.externalCacheDir?.absolutePath, dir, file)
+            FileMode.GET -> readFile(context,context.externalCacheDir?.absolutePath, dir, file)
             FileMode.WRITE-> createFile(context,context.externalCacheDir?.absolutePath, dir, file)
         }
     }
@@ -60,14 +60,13 @@ class ExternalStorage:BaseStorage(){
      * @param context 上下文
      * @param dir 需要创建的文件夹 可以为空
      * @param file 需要创建的文件
-     * 这个接口有版本要求
      */
     fun obbDirFile(context: Context, dir: String?, file: String,mode: FileMode): XFile? {
         if (!checkExternalEnable(mode)){
             return null
         }
         return when(mode){
-            FileMode.READ -> readFile(context,context.obbDir.absolutePath, dir, file)
+            FileMode.GET -> readFile(context,context.obbDir.absolutePath, dir, file)
             FileMode.WRITE-> createFile(context,context.obbDir.absolutePath, dir, file)
         }
     }

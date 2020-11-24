@@ -21,7 +21,6 @@ class StorageBuilder(context: Context, fileType: FileType, dir:String?, file:Str
             FileType.EXTERNAL_FILE->
                 // 简化API接口
                 ExternalStorage().file(context,null,dir,file,fileMode)
-            //targetFile = ExternalStorage().file(context,fileDirName,dir,file,fileMode)
             FileType.EXTERNAL_CACHE->
                 ExternalStorage().cacheFile(context,dir,file,fileMode)
         }

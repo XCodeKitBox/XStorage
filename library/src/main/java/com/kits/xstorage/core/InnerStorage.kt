@@ -26,7 +26,7 @@ class InnerStorage : BaseStorage(){
      */
     fun files(context: Context, dir: String?, file: String,mode:FileMode): XFile? {
         return when(mode){
-            FileMode.READ -> readFile(context,context.filesDir.absolutePath, dir, file)
+            FileMode.GET -> readFile(context,context.filesDir.absolutePath, dir, file)
             FileMode.WRITE-> createFile(context,context.filesDir.absolutePath, dir, file)
         }
     }
@@ -40,7 +40,7 @@ class InnerStorage : BaseStorage(){
      */
     fun cacheFile(context: Context, dir: String?, file: String,mode:FileMode): XFile? {
         return when(mode){
-            FileMode.READ -> readFile(context,context.cacheDir.absolutePath, dir, file)
+            FileMode.GET -> readFile(context,context.cacheDir.absolutePath, dir, file)
             FileMode.WRITE-> createFile(context,context.cacheDir.absolutePath, dir, file)
         }
     }
@@ -104,7 +104,6 @@ class InnerStorage : BaseStorage(){
      * 1. 通过这个接口创建的文件只能是再files文件下直接创建文件，不能创建更深一层的子目录
      * 2. API>=24 以后文件权限 只支持MODE_PRIVATE，MODE_APPEND。MODE_WORLD_READABLE，MODE_WORLD_WRITEABLE 直接抛出异常
      */
-
     fun outputFile(context: Context, fullName: String, mode: Int=Context.MODE_PRIVATE): OutputStream {
         return context.openFileOutput(fullName, mode)
     }

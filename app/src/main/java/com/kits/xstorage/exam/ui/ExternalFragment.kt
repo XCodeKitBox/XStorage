@@ -3,6 +3,7 @@ package com.kits.xstorage.exam.ui
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -69,7 +70,7 @@ class ExternalFragment : SupportFragment(){
 
         btnReadFile.setOnClickListener {
             // 直接在 file 文件夹下 创建文件
-            val file1 = xStorage.read(FileType.EXTERNAL_FILE,"myTest100.txt")
+            val file1 = xStorage.get(FileType.EXTERNAL_FILE,"myTest100.txt")
             file1?.let {
                 val inStream = FileInputStream(file1.targetFile)
                 val buf = ByteArray(inStream.available())
@@ -78,7 +79,7 @@ class ExternalFragment : SupportFragment(){
             }
 
             // 在file 文件夹下，创建标准文件夹（语义比较强）
-            val file2 = xStorage.read(FileType.EXTERNAL_FILE,Environment.DIRECTORY_DCIM,"myTest100.txt")
+            val file2 = xStorage.get(FileType.EXTERNAL_FILE,Environment.DIRECTORY_DCIM,"myTest100.txt")
             file2?.let {
                 val inStream = FileInputStream(file2.targetFile)
                 val buf = ByteArray(inStream.available())
@@ -87,7 +88,7 @@ class ExternalFragment : SupportFragment(){
             }
 
             // 在file 文件夹下，创建任意层级的文件夹
-            val file3 = xStorage.read(FileType.EXTERNAL_FILE,"aa/bb","myTest100.txt")
+            val file3 = xStorage.get(FileType.EXTERNAL_FILE,"aa/bb","myTest100.txt")
             file3?.let {
                 val inStream = FileInputStream(file3.targetFile)
                 val buf = ByteArray(inStream.available())
@@ -106,7 +107,7 @@ class ExternalFragment : SupportFragment(){
         }
 
         btnReadCacheFile.setOnClickListener {
-            val file1 = xStorage.read(FileType.EXTERNAL_CACHE,"myTest200.txt")
+            val file1 = xStorage.get(FileType.EXTERNAL_CACHE,"myTest200.txt")
             file1?.let {
                 val inStream = FileInputStream(file1.targetFile)
                 val buf = ByteArray(inStream.available())
@@ -132,9 +133,33 @@ class ExternalFragment : SupportFragment(){
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 outputStream.close()
                 bitmap.recycle()
+
+                MediaScannerConnection.scanFile(requireContext()
+                        , arrayOf(imageFiles.absolutePath)
+                        , arrayOf("image/jpeg")) { path, uri ->
+                    println("path == $path ; uri == $uri")
+                }
             }
 
+        }
+        // 扫描失败
+        btnMediaFile.setOnClickListener {
+            val imageFile = xStorage.write(FileType.EXTERNAL_FILE,Environment.DIRECTORY_DCIM,"myTest100.png")
+            val outputStream = imageFile?.outputStream()
+            val bitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888)
+            val tmpCanvas = Canvas()
+            tmpCanvas.setBitmap(bitmap)
+            tmpCanvas.drawColor(Color.RED)
+            tmpCanvas.save()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            outputStream?.close()
+            bitmap.recycle()
 
+            MediaScannerConnection.scanFile(requireContext()
+                    , arrayOf(imageFile?.targetFile.toString())
+                    , arrayOf("image/jpeg")) { path, uri ->
+                println("path == $path ; uri == $uri")
+            }
         }
     }
 }

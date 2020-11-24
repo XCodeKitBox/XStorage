@@ -103,7 +103,7 @@ class PublicMediaFragment : SupportFragment(){
             }
             for (index in 0..5){
                 val fileName = "Simple${index}.jpg"
-                val outputStream = xStorage.createImage(Environment.DIRECTORY_DCIM,fileName)?.outputStream()
+                val outputStream = xStorage.createImage(Environment.DIRECTORY_DCIM,null,fileName)?.outputStream()
                 if (outputStream == null){
                     println("outputStream == null")
                 }
@@ -134,7 +134,7 @@ class PublicMediaFragment : SupportFragment(){
     }
 
     private fun writePictures(){
-        val outputStream = xStorage.createImage(Environment.DIRECTORY_PICTURES,"simple.png")?.outputStream()
+        val outputStream = xStorage.createImage(Environment.DIRECTORY_PICTURES,null,"simple.png")?.outputStream()
         val bitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888)
         val tmpCanvas = Canvas()
         tmpCanvas.setBitmap(bitmap)

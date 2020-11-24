@@ -4,21 +4,31 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import com.kits.xstorage.FileMode
+import com.kits.xstorage.Storage
 import java.io.File
+import java.util.regex.Pattern
 
 open class BaseStorage {
+
+    companion object{
+        const val DIR_REG = "(/)\\1+"
+    }
+
+    fun formatPath(path:String):String{
+        return Pattern.compile(DIR_REG).matcher(path).replaceAll("$1")
+    }
 
     fun buildFilePath(basePath:String?,dir:String?,file:String):String?{
 
         if (basePath == null){
             return null
         }
-        return if (dir == null){
+        val path = if (dir == null){
             basePath + File.separator + file
         }else{
             basePath + File.separator + dir + File.separator + file
         }
-
+        return formatPath(path)
     }
 
     fun createFile(context: Context,basePath:String?,dir:String?,file:String): XFile?{
@@ -67,9 +77,10 @@ open class BaseStorage {
         if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState()){
             return true
         }
-        if (FileMode.READ == mode && Environment.MEDIA_MOUNTED_READ_ONLY == Environment.getExternalStorageState()){
-            return true
-        }
+        // 存在外置SD卡的时候，存在外置SD卡只读的情况，尚未适配
+//        if (FileMode.READ == mode && Environment.MEDIA_MOUNTED_READ_ONLY == Environment.getExternalStorageState()){
+//            return true
+//        }
         return false
     }
 
@@ -78,14 +89,12 @@ open class BaseStorage {
      * @param context 上下文
      * @param contentUri 需要查询的Uri
      */
-    fun getFileByUri(context: Context, contentUri: Uri?):XFile?{
-        contentUri?.let {
-            val queryCursor = context.contentResolver.query(contentUri,null,
-                    null, null,null)
-            if (queryCursor != null && queryCursor.count > 0){
-                queryCursor.close()
-                return XFile(context,contentUri)
-            }
+    fun getFileByUri(context: Context, contentUri: Uri):XFile?{
+        val queryCursor = context.contentResolver.query(contentUri,null,
+                null, null,null)
+        if (queryCursor != null && queryCursor.count > 0){
+            queryCursor.close()
+            return XFile(context,contentUri)
         }
         return null
     }
@@ -95,11 +104,8 @@ open class BaseStorage {
      * @param context 上下文
      * @param contentUri 需要删除的Uri
      */
-    fun deleteFileByUri(context: Context, contentUri: Uri?):Int{
-        contentUri?.let {
-            return context.contentResolver.delete(contentUri,null,null)
-        }
-        return 0
+    fun deleteFileByUri(context: Context, contentUri: Uri):Int{
+        return context.contentResolver.delete(contentUri,null,null)
     }
 
 }

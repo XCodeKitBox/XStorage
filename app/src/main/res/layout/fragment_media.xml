@@ -10,6 +10,24 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/btnSame"
+            android:text="文件同名问题"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnSame1"
+            android:text="文件同名问题1"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnUpdate"
+            android:text="修改刷新问题"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/btnQueryMedia"
             android:text="查询多媒体文件"/>
         <Button

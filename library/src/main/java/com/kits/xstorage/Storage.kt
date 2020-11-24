@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
 import com.kits.xstorage.core.FileProviderStorage
 import com.kits.xstorage.core.InnerStorage
 import com.kits.xstorage.core.PublicStore
@@ -12,12 +13,16 @@ import com.kits.xstorage.lifecycle.ActivityLifecycle
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
+import java.lang.RuntimeException
+import java.util.regex.Pattern
+import kotlin.jvm.Throws
 
 class Storage private constructor(){
     lateinit var context:Context
     private lateinit var builder: StorageBuilder
     companion object{
         val instance = StorageHolder.holder
+        const val DIR_REG = "(/)\\1+"
     }
 
     private object StorageHolder{
@@ -29,67 +34,184 @@ class Storage private constructor(){
         this.context = application.applicationContext
     }
 
-    /****************************************************************************************************
-     * *********************公共操作**************************************
-     ***************************************************************************************************/
+    /**
+     * 格式化文件夹路径，去除多余的文件分隔符
+     * 后续对文件命名规则加入判断 （1. 不能使用的特殊符号，2，文件长度的限制）
+     * @param dir 文件夹路径
+     * @return 有文件夹路径返回格式化后的文件路径；格式为 /xxx/xxx/
+     */
+    fun formatDirPath(dir:String?):String?{
+        return if(dir.isNullOrEmpty()){
+            null
+        }else{
+            Pattern.compile(DIR_REG).matcher(File.separator + dir +File.separator).replaceAll("$1")
+        }
+    }
 
-    fun getFileByUri(uri:Uri?):XFile?{
+    /**
+     * 检查文件名称
+     * 后续对文件命名规则加入判断 （1. 不能使用的特殊符号，2，文件长度的限制）
+     * @param name 文件名称
+     * @return 文件名称
+     * @throws RuntimeException 文件名称不规范抛出异常
+     */
+    fun checkFileName(name:String):String{
+        if (name.contains("/")){
+            throw RuntimeException("文件名称不能带文件分隔符")
+        }
+        return name
+    }
+
+    /****************************************************************************************************
+     **************************************公共操作******************************************************
+     ***************************************************************************************************/
+    /**
+     *文件的操作，更倾向于使用Uri进行直接操作，即可以把Uri看出存在存储设备的唯一ID
+     * @param uri 需要查询的Uri
+     */
+    fun getFileByUri(uri:Uri):XFile?{
         return PublicStore().getFileByUri(context,uri)
     }
 
-    fun deleteFileByUri(uri:Uri?):Int{
+    /**
+     * 删除文件操作，更倾向于使用Uri进行直接操作，即可以把Uri看出存在存储设备的唯一ID
+     * @param uri 需要删除的Uri
+     */
+    fun deleteFileByUri(uri:Uri):Int{
         return PublicStore().deleteFileByUri(context,uri)
     }
 
     /****************************************************************************************************
      * *********************内部存储空间，外部存储空间-应用专有目录读写**************************************
      ***************************************************************************************************/
-
+    /**
+     * 写文件
+     * @param fileType 文件所在的存储基准路径
+     * @param dir 子文件夹路径
+     * @param file 文件名称
+     * @return 如果文件存在则返回XFile,如果文件不存在，则创建文件，返回XFile,存储空间不可用返回null
+     * @throws RuntimeException 文件名称不规范抛出异常
+     */
+    @Throws(RuntimeException::class)
     fun write(fileType: FileType,dir:String?,file:String): XFile?{
-        builder = StorageBuilder(context,fileType,dir,file,FileMode.WRITE)
+        builder = StorageBuilder(context,fileType, formatDirPath(dir),checkFileName(file),FileMode.WRITE)
         return builder.targetFile
     }
-
+    /**
+     * 写文件
+     * @param fileType 文件所在的存储基准路径
+     * @param file 文件名称
+     * @return 如果文件存在则返回XFile,如果文件不存在，则创建文件，返回XFile,存储空间不可用返回null
+     *  @throws RuntimeException 文件名称不规范抛出异常
+     */
+    @Throws(RuntimeException::class)
     fun write(fileType: FileType,file:String): XFile?{
-        builder = StorageBuilder(context,fileType,file,FileMode.WRITE)
+        builder = StorageBuilder(context,fileType,checkFileName(file),FileMode.WRITE)
         return builder.targetFile
     }
-
-    fun read(fileType: FileType,dir:String?,file:String): XFile?{
-        builder = StorageBuilder(context,fileType,dir,file,FileMode.READ)
+    /**
+     * 获取文件
+     * @param fileType 文件所在的存储基准路径
+     * @param dir 子文件夹路径
+     * @param file 文件名称
+     * @return 文件存在成功返回XFile 否则返回null
+     * @throws RuntimeException 文件名称不规范抛出异常
+     */
+    @Throws(RuntimeException::class)
+    fun get(fileType: FileType,dir:String?,file:String): XFile?{
+        builder = StorageBuilder(context,fileType,formatDirPath(dir),checkFileName(file),FileMode.GET)
         return builder.targetFile
     }
-
-    fun read(fileType: FileType,file:String): XFile?{
-        builder = StorageBuilder(context,fileType,file,FileMode.READ)
+    /**
+     * 获取文件
+     * @param fileType 文件所在的存储基准路径
+     * @param file 文件名称
+     * @return 文件存在成功返回XFile 否则返回null
+     * @throws RuntimeException 文件名称不规范抛出异常
+     */
+    @Throws(RuntimeException::class)
+    fun get(fileType: FileType,file:String): XFile?{
+        builder = StorageBuilder(context,fileType,checkFileName(file),FileMode.GET)
         return builder.targetFile
     }
-
+    /**
+     * 在内部存储空间/data/data/<applicationId>/files/ 中创建文件
+     * @param file 需要创建的文件
+     * @return 返回文件操作File
+     * 注意通过这个接口创建的文件只能是再files文件下直接创建文件，不能创建更深一层的子目录
+     */
+    @Throws(RuntimeException::class)
     fun fileStreamPath(file:String):File{
-        return InnerStorage().fileStreamPath(context,file)
+        return InnerStorage().fileStreamPath(context,checkFileName(file))
     }
 
+    /**
+     * 在内部存储空间/data/data/<applicationId>/files/ 中创建文件
+     * @param file 需要创建的文件
+     * 注意通过这个接口创建的文件只能是再files文件下直接创建文件，不能创建更深一层的子目录
+     */
+    @Throws(RuntimeException::class)
     fun inputFile(file:String):InputStream{
-        return InnerStorage().inputFile(context,file)
+        return InnerStorage().inputFile(context,checkFileName(file))
     }
-
+    /**
+     * 在内部存储空间/data/data/<applicationId>/files/ 中创建文件
+     * @param file 需要创建的文件
+     * @param mode 创建文件的权限
+     * 注意
+     * 1. 通过这个接口创建的文件只能是再files文件下直接创建文件，不能创建更深一层的子目录
+     * 2. API>=24 以后文件权限 只支持MODE_PRIVATE，MODE_APPEND。MODE_WORLD_READABLE，MODE_WORLD_WRITEABLE 直接抛出异常
+     */
+    @Throws(RuntimeException::class)
     fun outputFile(file:String,mode: Int=Context.MODE_PRIVATE):OutputStream{
-        return InnerStorage().outputFile(context,file,mode)
+        return InnerStorage().outputFile(context,checkFileName(file),mode)
     }
 
     /*****************************************************************************************************
-     * ********************************公共多媒体目录读写接口 开始*******************************************
+     *********************************公共多媒体目录读写接口 开始*******************************************
      *****************************************************************************************************/
-    fun createImage(imageType: String,dir:String?,file:String,contentValues: ContentValues = ContentValues()):XFile?{
+    /**
+     * 使用MediaStore创建图片文件
+     * 相同点：在标准图片文件夹下创建文件，如果存在同名文件，系统会重命名文件。
+     * 不同点： API >= 30 或者API = 29(使用沙盒机制)，MediaStore支持指定系统标准文件夹和在标准文件夹下创建子文件夹
+     *         API <=29(不使用沙盒机制)，MediaStore 默认将图片存储在Pictures文件夹下
+     * 注意点：存储图片文件，最好传入 MediaStore.Images.Media.MIME_TYPE
+     *
+     * 为了统一接口，在非沙盒模式下，使用File接口，接口对文件进行操作。
+     *
+     * @param imageType 图片存储的基准目录
+     * @param dir 子文件夹
+     * @param file 文件名称
+     * @param contentValues 其他信息
+     * @return 创建成功返回XFile,失败返回null
+     * @throws RuntimeException 文件名称不规范抛出异常
+     */
+    @Throws(RuntimeException::class)
+    fun createImage(imageType: String=Environment.DIRECTORY_PICTURES, dir:String?, file:String, contentValues: ContentValues = ContentValues()):XFile?{
         return PublicStore().writeImageFile(context,imageType,dir,file,contentValues)
     }
+
     /**
-     * 注意：
-     * 1 . 系统默认的扩展名是jpg/jpeg,如果是存储的非jpg/jpeg,需要传入 MediaStore.Images.Media.MIME_TYPE
-     * 2.
+     * 读取多媒体图片资源文件,默认读取Pictures文件夹下的文件
+     * @param type 标准目录文件，
+     * @param dir 文件夹路径，
+     * @param file 文件名称
+     * @return
      */
-    fun createImage(imageType: String,file:String,contentValues: ContentValues = ContentValues()):XFile?{
-        return PublicStore().writeImageFile(context,imageType,null,file,contentValues)
+    @Throws(RuntimeException::class)
+    fun getImageFile(type:String=Environment.DIRECTORY_PICTURES,dir:String?=null,file: String):XFile?{
+        return PublicStore().getImageFile(context,type,formatDirPath(dir),checkFileName(file))
+    }
+
+    /**
+     * 删除公共多媒体文件，在Android 10 以上的系统会有提示
+     * @param type 标准图片多媒体文件夹
+     * @param dir 子文件夹
+     * @param file 文件名称
+     * @return 返回删除的条数
+     */
+    fun deleteImageFile(type:String,dir:String?=null,file: String):Int{
+        return PublicStore().deleteImageFile(context,type,formatDirPath(dir),checkFileName(file))
     }
 
     fun createAudio(audioType: String,dir:String?,file:String,contentValues: ContentValues = ContentValues()):XFile?{
@@ -124,14 +246,6 @@ class Storage private constructor(){
         return PublicStore().getFile(context,type,null,file)
     }
 
-    fun getImageFile(type:String,dir:String?=null,file: String):XFile?{
-        return PublicStore().getImageFile(context,type,dir,file)
-    }
-
-    fun getImageFile(type:String,file: String):XFile?{
-        return PublicStore().getImageFile(context,type,null,file)
-    }
-
     fun getAudioFile(type:String,dir:String?=null,file: String):XFile?{
         return PublicStore().getAudioFile(context,type,dir,file)
     }
@@ -157,16 +271,7 @@ class Storage private constructor(){
         return PublicStore().deleteFile(context,type,null,file)
     }
 
-    /**
-     * 删除公共多媒体文件，在Android 10 以上的系统会有提示
-     * @param type 标准图片多媒体文件夹
-     * @param dir 子文件夹
-     * @param file 文件名称
-     * @return 返回删除的条数
-     */
-    fun deleteImageFile(type:String,dir:String?=null,file: String):Int{
-        return PublicStore().deleteImageFile(context,type,dir,file)
-    }
+
 
     fun deleteImageFile(type:String,file: String):Int{
         return PublicStore().deleteImageFile(context,type,null,file)

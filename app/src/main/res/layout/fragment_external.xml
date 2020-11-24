@@ -37,4 +37,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnMediaFiles"
         android:text="外部存储媒体文件"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnMediaFile"
+        android:text="外部存储-files-文件夹下媒体文件"/>
 </LinearLayout>

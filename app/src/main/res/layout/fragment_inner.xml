@@ -25,6 +25,14 @@
         android:text="写应用内部缓存空间"
         android:id="@+id/btnCacheWrite"/>
 
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试同名文件问题"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnCreateFile"
+        android:text="创建同名文件"/>
 
 </LinearLayout>

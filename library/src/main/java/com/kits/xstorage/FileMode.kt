@@ -2,9 +2,9 @@ package com.kits.xstorage
 
 enum class FileMode {
     /**
-     * 读模式
+     * 获取模式
      */
-    READ,
+    GET,
     /**
      * 写模式
      */
