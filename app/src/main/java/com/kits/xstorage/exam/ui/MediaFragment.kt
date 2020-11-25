@@ -133,42 +133,42 @@ class MediaFragment : SupportFragment(){
         }
 
         btnAddFile.setOnClickListener {
+//            val file1 = addFile(Environment.DIRECTORY_DOCUMENTS,null,file)
+//            SpStoreUtils.setParam("file1",file1?.targetUri.toString())
+//            println("file1 == ${SpStoreUtils.getParam<String>("file1")}")
             val file1 = addFile(Environment.DIRECTORY_DOCUMENTS,null,file)
-            SpStoreUtils.setParam("file1",file1?.targetUri.toString())
-            println("file1 == ${SpStoreUtils.getParam<String>("file1")}")
-//            addFile(Environment.DIRECTORY_DOWNLOADS,null,file)
-//
-//            addFile(Environment.DIRECTORY_DOCUMENTS,"aa/bb",file)
-//            addFile(Environment.DIRECTORY_DOWNLOADS,"cc/dd",file)
+            addFile(Environment.DIRECTORY_DOWNLOADS,null,file)
+            addFile(Environment.DIRECTORY_DOCUMENTS,"aa/bb",file)
+            addFile(Environment.DIRECTORY_DOWNLOADS,"cc/dd",file)
 //            // 关于文件分隔符问题
 //            addFile(Environment.DIRECTORY_DOCUMENTS,null,"////myTest11.txt")
 
         }
 
         btnGetFile.setOnClickListener {
-            println("===DIRECTORY_DOCUMENTS==无子文件夹")
-            getFileByUri(Uri.parse(SpStoreUtils.getParam<String>("file1")))
-//            getFile(Environment.DIRECTORY_DOCUMENTS,null,file)
-//            println("===DIRECTORY_DOWNLOADS==无子文件夹")
-//            getFile(Environment.DIRECTORY_DOWNLOADS,null,file)
-//
-//            println("===DIRECTORY_DOWNLOADS==子文件夹")
-//            getFile(Environment.DIRECTORY_DOCUMENTS,"aa/bb",file)
-//            println("===DIRECTORY_DOCUMENTS==子文件夹")
-//            getFile(Environment.DIRECTORY_DOWNLOADS,"cc/dd",file)
+//            println("===DIRECTORY_DOCUMENTS==无子文件夹")
+//            getFileByUri(Uri.parse(SpStoreUtils.getParam<String>("file1")))
+            getFile(Environment.DIRECTORY_DOCUMENTS,null,file)
+            println("===DIRECTORY_DOWNLOADS==无子文件夹")
+            getFile(Environment.DIRECTORY_DOWNLOADS,null,file)
+
+            println("===DIRECTORY_DOWNLOADS==子文件夹")
+            getFile(Environment.DIRECTORY_DOCUMENTS,"aa/bb",file)
+            println("===DIRECTORY_DOCUMENTS==子文件夹")
+            getFile(Environment.DIRECTORY_DOWNLOADS,"cc/dd",file)
 
         }
 
         btnDeleteFile.setOnClickListener {
-           // val ret1 = xStorage.deleteFile(Environment.DIRECTORY_DOCUMENTS,file)
-            val ret1 = xStorage.deleteFileByUri(Uri.parse(SpStoreUtils.getParam<String>("file1")))
+            val ret1 = xStorage.deleteFile(Environment.DIRECTORY_DOCUMENTS,file)
+//            val ret1 = xStorage.deleteFileByUri(Uri.parse(SpStoreUtils.getParam<String>("file1")))
             println("===DIRECTORY_DOCUMENTS==无子文件夹 ${ret1}")
-//            val ret2 = xStorage.deleteFile(Environment.DIRECTORY_DOWNLOADS,null,file)
-//            println("===DIRECTORY_DOWNLOADS==无子文件夹 $ret2")
-//            val ret3 = xStorage.deleteFile(Environment.DIRECTORY_DOCUMENTS,"aa/bb",file)
-//            println("===DIRECTORY_DOWNLOADS==子文件夹 $ret3")
-//            val ret4 = xStorage.deleteFile(Environment.DIRECTORY_DOWNLOADS,"cc/dd",file)
-//            println("===DIRECTORY_DOCUMENTS==子文件夹 $ret4")
+            val ret2 = xStorage.deleteFile(Environment.DIRECTORY_DOWNLOADS,null,file)
+            println("===DIRECTORY_DOWNLOADS==无子文件夹 $ret2")
+            val ret3 = xStorage.deleteFile(Environment.DIRECTORY_DOCUMENTS,"aa/bb",file)
+            println("===DIRECTORY_DOWNLOADS==子文件夹 $ret3")
+            val ret4 = xStorage.deleteFile(Environment.DIRECTORY_DOWNLOADS,"cc/dd",file)
+            println("===DIRECTORY_DOCUMENTS==子文件夹 $ret4")
 
 
         }
