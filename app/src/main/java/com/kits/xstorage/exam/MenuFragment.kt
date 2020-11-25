@@ -43,6 +43,10 @@ class MenuFragment : SupportFragment(){
         btnSysProvider.setOnClickListener {
             start(FileProviderFragment.newInstance())
         }
+
+        btnSAF.setOnClickListener {
+            start(SAFFragment.newInstance())
+        }
     }
 
 }

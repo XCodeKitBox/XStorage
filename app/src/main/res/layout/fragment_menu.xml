@@ -28,4 +28,11 @@
         android:id="@+id/btnSysProvider"
         android:text="系统调用FileProvider"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:id="@+id/btnSAF"
+        android:text="通过SAF调用文件夹"/>
+
 </LinearLayout>

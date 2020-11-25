@@ -3,13 +3,18 @@ package com.kits.xstorage
 import android.app.Application
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import com.kits.xstorage.core.FileProviderStorage
 import com.kits.xstorage.core.InnerStorage
 import com.kits.xstorage.core.PublicStore
 import com.kits.xstorage.core.XFile
+import com.kits.xstorage.fragment.FragmentBuilder
+import com.kits.xstorage.fragment.SAFFilesListener
+import com.kits.xstorage.fragment.SAFListener
 import com.kits.xstorage.lifecycle.ActivityLifecycle
+import com.kits.xstorage.utils.SpStoreUtils
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -20,6 +25,7 @@ import kotlin.jvm.Throws
 class Storage private constructor(){
     lateinit var context:Context
     private lateinit var builder: StorageBuilder
+    private lateinit var activityLifecycle : ActivityLifecycle
     companion object{
         val instance = StorageHolder.holder
         const val DIR_REG = "(/)\\1+"
@@ -30,8 +36,19 @@ class Storage private constructor(){
     }
 
     fun init(application: Application){
-        //application.registerActivityLifecycleCallbacks(ActivityLifecycle())
+        activityLifecycle = ActivityLifecycle()
+        application.registerActivityLifecycleCallbacks(activityLifecycle)
         this.context = application.applicationContext
+    }
+
+    /**
+     * @param application 当前应用
+     * @param name SAF 已申请读写权限uri保存文件名称
+     */
+    fun init(application: Application,name:String){
+        SpStoreUtils.init(application.applicationContext,name)
+        init(application)
+        SpStoreUtils.enable = true
     }
 
     /**
@@ -308,7 +325,36 @@ class Storage private constructor(){
      * **********************************通过SAF访问目录*********************************************
      * 操作外部存储，且非公共目录的时候调用这个接口
      *******************************************************************************************************/
+    /**
+     * 使用SAF 打开单一文件（适用于外部存储空间，自定义的目录）
+     * @param intent 数据
+     * @param key   保存文件Uri的key，为空时不保存
+     * @param listener 打开单一文件监听器
+     */
+    fun openSingle(intent: Intent = Intent(),key:String?,listener : SAFListener){
+        FragmentBuilder(activityLifecycle.currentActivity).requestSingleFile(intent,key,listener)
+    }
 
+    /**
+     * 使用SAF 打开多个文件（适用于外部存储空间，自定义的目录）
+     * @param intent 数据
+     * @param listener 打开多个文件监听器
+     */
+
+    fun openMulti(intent: Intent,listener: SAFFilesListener){
+        FragmentBuilder(activityLifecycle.currentActivity).requestMultiFiles(intent,listener)
+    }
+
+    /**
+     * 使用SAF 打开创建文件（适用于外部存储空间，自定义的目录）
+     * @param intent 数据
+     * @param key   保存文件Uri的key，为空时不保存
+     * @param listener 打开单一文件监听器
+     */
+
+    fun createDocument(intent: Intent,key:String?,listener : SAFListener){
+        FragmentBuilder(activityLifecycle.currentActivity).requestCreateDocument(intent,key,listener)
+    }
 }
 
 val xStorage = Storage.instance

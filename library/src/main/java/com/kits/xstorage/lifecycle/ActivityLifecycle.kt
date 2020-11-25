@@ -3,34 +3,45 @@ package com.kits.xstorage.lifecycle
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
 
+/**
+ * 监听Activity的创建，在栈顶的Activity中添加不可见的Fragment用于执行SAF，分享等操作
+ */
 class ActivityLifecycle : Application.ActivityLifecycleCallbacks{
-
-    override fun onActivityPaused(activity: Activity) {
-        TODO("Not yet implemented")
+    lateinit var currentActivity:FragmentActivity
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        if (activity is FragmentActivity){
+            println("监听到-----$activity")
+            currentActivity = activity
+        }
     }
 
     override fun onActivityStarted(activity: Activity) {
-        TODO("Not yet implemented")
-    }
 
-    override fun onActivityDestroyed(activity: Activity) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onActivityStopped(activity: Activity) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        TODO("Not yet implemented")
     }
 
     override fun onActivityResumed(activity: Activity) {
-        TODO("Not yet implemented")
+
     }
+
+    override fun onActivityPaused(activity: Activity) {
+
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+
+    }
+
+    override fun onActivityStopped(activity: Activity) {
+
+    }
+
+
+
+
 }
