@@ -18,8 +18,13 @@
     <external-files-path
         name="external_file_path"
         path="/" />
+
     <external-cache-path
         name="external_cache_path"
         path="/" />
+
+    <external-media-path
+        name="external_media_path"
+        path="/"/>
 
 </paths>

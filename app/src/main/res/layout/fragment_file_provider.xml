@@ -7,6 +7,34 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btnSysTest1"
-        android:text="系统拍照1"/>
+        android:id="@+id/btnAppFiles"
+        android:text="内部存储空间Files"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnAppCache"
+        android:text="内部缓存空间Cache"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnAppExFiles"
+        android:text="外部存储空间Files"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnAppExCache"
+        android:text="外部缓存空间Cache"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnExMedia"
+        android:text="外部存储空间-多媒体"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivShow"/>
 </LinearLayout>

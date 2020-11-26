@@ -316,9 +316,59 @@ class Storage private constructor(){
      * **********************************通过FileProvider访问目录*********************************************
      * 1. 给系统调用(拍照，录音等等)。2 分享给其他应用，3 其他应用通过contentProvider获取（不常用）
      *******************************************************************************************************/
+    /**
+     * 获取 files-path 的文件 uri。对与文件，文件存在是获取文件，不存在是创建文件
+     * @param dir 文件夹
+     * @param file 文件名
+     * @return 成功返回Uri ,否则返回null
+     */
+    fun filesPathUri(dir:String?,file:String): Uri ?{
+        return FileProviderStorage().filesPathUri(dir,file)
+    }
 
-    fun rootFileProvider(dir:String?,file:String): Uri ?{
-        return FileProviderStorage().rootPath(context,dir,file)
+    /**
+     * 获取 cache-path 的文件 uri 对与文件，文件存在是获取文件，不存在是创建文件
+     * @param dir 文件夹
+     * @param file 文件名
+     * @return 成功返回Uri ,否则返回null
+     */
+
+    fun cachePathUri(dir:String?,file:String):Uri?{
+        return  FileProviderStorage().cachePathUri(dir,file)
+    }
+
+    /**
+     * 获取 external-files-path 的文件 uri 对与文件，文件存在是获取文件，不存在是创建文件
+     * @param dir 文件夹
+     * @param file 文件名
+     * @return 成功返回Uri ,否则返回null
+     */
+
+    fun externalFilesPathUri(dir:String?,file:String):Uri?{
+        return  FileProviderStorage().externalFilesPathUri(context,dir,file)
+    }
+
+    /**
+     * 获取 external-cache-path  的文件 uri  对与文件，文件存在是获取文件，不存在是创建文件
+     * @param dir 文件夹
+     * @param file 文件名
+     * @return 成功返回Uri ,否则返回null
+     */
+
+    fun externalCachePathUri(dir:String?,file:String):Uri?{
+        return  FileProviderStorage().externalCachePathUri(context,dir,file)
+    }
+    /**
+     * external-path
+     * 考虑实际场景和兼容性要求，只封装公共多媒体的接口。
+     * @param type 多媒体标准路径
+     * @param dir 标准路径下子文件夹路径
+     * @param file 文件名称
+     * @param fileMode 获取文件方式，模式是读取文件
+     * @return 成功返回Uri ,否则返回null
+     */
+    fun publicMediaPathUri(type:String,dir: String?,file: String,fileMode: FileMode = FileMode.GET):Uri?{
+        return FileProviderStorage().publicMediaPathUri(type,dir,file,fileMode)
     }
 
     /********************************************************************************************************

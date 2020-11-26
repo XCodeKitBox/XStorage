@@ -16,6 +16,8 @@ import com.kits.xstorage.exam.utils.SpStoreUtils
 import com.kits.xstorage.xStorage
 import kotlinx.android.synthetic.main.fragment_media.*
 import me.yokeyword.fragmentation.SupportFragment
+import java.io.File
+import java.io.FileInputStream
 import java.util.regex.Pattern
 
 class MediaFragment : SupportFragment(){
@@ -63,7 +65,7 @@ class MediaFragment : SupportFragment(){
             val file = xStorage.createImage(Environment.DIRECTORY_PICTURES,null,"index.jpg")
             testUri = file?.targetUri
             println("222testUri == $testUri")
-            SpStoreUtils.setParam("aa",testUri.toString())
+//            SpStoreUtils.setParam("aa",testUri.toString())
             val outStream = file?.outputStream()
             val bitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888)
             val tmpCanvas = Canvas()
