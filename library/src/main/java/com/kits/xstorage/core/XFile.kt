@@ -17,6 +17,7 @@ class XFile(val context: Context, val targetUri: Uri) {
         fun getUriForFile(context: Context, file: File): Uri {
             var fileUri: Uri? = null
             fileUri = if (Build.VERSION.SDK_INT >= 24) {
+                println("import == ${file.getCanonicalPath()}")
                 FileProvider.getUriForFile(context, context.packageName + ".fileProvider", file)
             } else {
                 Uri.fromFile(file)

@@ -42,4 +42,30 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnMediaFile"
         android:text="外部存储-files-文件夹下媒体文件"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnPrimaryStorage"
+        android:text="主存储设备路径"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnSdStorage"
+        android:text="切换外置存储设备测试"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnWriteSdStorageUri"
+        android:text="写外置存储设备测试"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnReadSdStorageUri"
+        android:text="读外置存储设备测试"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnStorageManager"
+        android:text="外置存储管理"/>
 </LinearLayout>

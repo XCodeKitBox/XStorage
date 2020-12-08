@@ -8,5 +8,6 @@ class DemoApp :Application(){
     override fun onCreate() {
         super.onCreate()
         xStorage.init(this,"saf_save.xml")
+        SpStoreUtils.init(this)
     }
 }

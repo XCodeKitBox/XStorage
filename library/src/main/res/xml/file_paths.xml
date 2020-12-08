@@ -3,6 +3,7 @@
     <root-path
         name="root"
         path="" />
+
     <files-path
         name="files"
         path="/" />
