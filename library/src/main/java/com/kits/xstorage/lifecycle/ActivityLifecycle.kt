@@ -11,10 +11,7 @@ import androidx.fragment.app.FragmentActivity
 class ActivityLifecycle : Application.ActivityLifecycleCallbacks{
     lateinit var currentActivity:FragmentActivity
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        if (activity is FragmentActivity){
-            println("监听到-----$activity")
-            currentActivity = activity
-        }
+
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -22,7 +19,10 @@ class ActivityLifecycle : Application.ActivityLifecycleCallbacks{
     }
 
     override fun onActivityResumed(activity: Activity) {
-
+        if (activity is FragmentActivity){
+            println("监听到-----$activity")
+            currentActivity = activity
+        }
     }
 
     override fun onActivityPaused(activity: Activity) {
